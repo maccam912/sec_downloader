@@ -23,8 +23,8 @@ defmodule SecDownloader.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.8.0"},
-      {:nimble_csv, "~> 1.1.0"},
-      {:flow, "~> 1.1.0"}
+      {:flow, "~> 1.1.0"},
+      {:nimble_csv, "~> 1.1.0"}
     ]
   end
 end

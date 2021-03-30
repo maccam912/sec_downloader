@@ -1,5 +1,5 @@
 defmodule SecDownloader do
-  NimbleCSV.define(IndexParser, separator: to_string([5]))
+  NimbleCSV.define(IndexParser, separator: "|", escape: "\"")
 
   def get_index(url) do
     {st, %HTTPoison.Response{body: body}} = HTTPoison.get(url, [], recv_timeout: 60000)
@@ -70,7 +70,7 @@ defmodule SecDownloader do
   end
 
   def get_quarters() do
-    2005..2021
+    2006..2006
     |> Enum.flat_map(fn year ->
       [{year, "QTR1"}, {year, "QTR2"}, {year, "QTR3"}, {year, "QTR4"}]
     end)

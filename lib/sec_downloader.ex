@@ -48,6 +48,7 @@ defmodule SecDownloader do
         [_, _, _, adsh_txt] = String.split(filename, ["/"])
         {adsh_txt, "https://www.sec.gov/Archives/#{filename}"}
       end)
+    IO.puts "Pairs done"
 
     SecDownloader.Counter.start_link(length(pairs))
 

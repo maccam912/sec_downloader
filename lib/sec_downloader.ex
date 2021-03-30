@@ -2,7 +2,10 @@ defmodule SecDownloader do
   NimbleCSV.define(IndexParser, separator: "|", escape: "\"")
 
   def get_index(url) do
+    IO.puts("Getting index for #{url}")
     {st, %HTTPoison.Response{body: body}} = HTTPoison.get(url, [], recv_timeout: 60000)
+
+    IO.inspect(body)
 
     if st != :ok do
       [nil]
@@ -35,7 +38,8 @@ defmodule SecDownloader do
     pairs =
       get_quarters()
       |> Enum.map(fn {year, qtr} ->
-        get_index_url(year, qtr)
+        IO.puts("Getting URL for #{year} #{qtr}")
+        IO.inspect(get_index_url(year, qtr))
       end)
       |> Enum.flat_map(fn url ->
         get_index(url)

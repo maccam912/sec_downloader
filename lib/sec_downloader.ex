@@ -38,19 +38,11 @@ defmodule SecDownloader do
         get_index_url(year, qtr)
       end)
       |> Enum.flat_map(fn url ->
-        try do
-          try do
-            get_index(url)
-            |> Flow.from_enumerable()
-            |> Flow.map(fn item ->
-              Map.get(item, :filename)
-            end)
-          catch
-            _ -> nil
-          end
-        rescue
-          _ -> nil
-        end
+        get_index(url)
+        |> Flow.from_enumerable()
+        |> Flow.map(fn item ->
+          Map.get(item, :filename)
+        end)
       end)
       |> Enum.filter(fn item -> !is_nil(item) end)
       |> Enum.map(fn filename ->

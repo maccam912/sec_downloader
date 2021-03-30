@@ -10,6 +10,7 @@ defmodule SecDownloader.Application do
     children = [
       # Starts a worker by calling: SecDownloader.Worker.start_link(arg)
       # {SecDownloader.Worker, arg}
+      {SecDownloader, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

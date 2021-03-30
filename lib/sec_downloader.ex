@@ -1,4 +1,6 @@
 defmodule SecDownloader do
+  use GenServer
+
   NimbleCSV.define(IndexParser, separator: "|", escape: "\"")
 
   def get_index(url) do
@@ -34,6 +36,20 @@ defmodule SecDownloader do
     end
   end
 
+  def start_link(_opts) do
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
+  end
+
+  def init(_opts) do
+    GenServer.cast(__MODULE__, :run)
+    {:ok, []}
+  end
+
+  def handle_cast(:run, state) do
+    do_work()
+    {:noreply, state}
+  end
+
   def do_work() do
     pairs =
       get_quarters()
@@ -55,7 +71,9 @@ defmodule SecDownloader do
       end)
 
     IO.puts("Pairs done")
-    pairs = Enum.drop(pairs, 48480)
+    existing = File.ls!("filings")
+    pairs = Enum.filter(pairs, fn {adsh_txt, _} -> adsh_txt not in existing end)
+
     SecDownloader.Counter.start_link(length(pairs))
 
     pairs

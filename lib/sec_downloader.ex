@@ -48,13 +48,16 @@ defmodule SecDownloader do
         [_, _, _, adsh_txt] = String.split(filename, ["/"])
         {adsh_txt, "https://www.sec.gov/Archives/#{filename}"}
       end)
-    IO.puts "Pairs done"
+
+    IO.puts("Pairs done")
 
     SecDownloader.Counter.start_link(length(pairs))
 
     pairs
     |> Flow.from_enumerable(stages: 4, min_demand: 10, max_demand: 20)
     |> Flow.map(fn {adsh_txt, url} ->
+      :ok = SecDownloader.Counter.unlock()
+
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} =
         HTTPoison.get(url, [], recv_timeout: 60000)
 

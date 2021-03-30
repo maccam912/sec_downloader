@@ -9,6 +9,10 @@ defmodule SecDownloader.Counter do
     GenServer.cast(__MODULE__, :inc)
   end
 
+  def unlock() do
+    GenServer.call(__MODULE__, :unlock)
+  end
+
   def init(n) do
     {:ok, {0, n}}
   end
@@ -16,5 +20,10 @@ defmodule SecDownloader.Counter do
   def handle_cast(:inc, {state, n}) do
     IO.puts("#{state}\t/\t#{n}")
     {:noreply, {state + 1, n}}
+  end
+
+  def handle_call(:unlock, state) do
+    Process.sleep(100)
+    {:ok, :ok, state}
   end
 end

@@ -10,7 +10,7 @@ defmodule SecDownloader.Counter do
   end
 
   def unlock() do
-    GenServer.call(__MODULE__, :unlock)
+    GenServer.call(__MODULE__, :unlock, :infinity)
   end
 
   def init(n) do
@@ -22,7 +22,7 @@ defmodule SecDownloader.Counter do
     {:noreply, {state + 1, n}}
   end
 
-  def handle_call(:unlock, state) do
+  def handle_call(:unlock, _from, state) do
     Process.sleep(100)
     {:reply, :ok, state}
   end

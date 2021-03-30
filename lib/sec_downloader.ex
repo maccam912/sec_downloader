@@ -7,7 +7,7 @@ defmodule SecDownloader do
 
     IO.inspect(body)
 
-    if st != :ok do
+    if st != :ok or String.length(body) < 1000 do
       [nil]
     else
       parse_task = Task.async(fn -> IndexParser.parse_string(body) end)

@@ -38,12 +38,17 @@ defmodule SecDownloader do
         get_index_url(year, qtr)
       end)
       |> Enum.flat_map(fn url ->
-        get_index(url)
-        |> Flow.from_enumerable()
-        |> Flow.map(fn item ->
-          Map.get(item, :filename)
-        end)
+        try do
+          get_index(url)
+          |> Flow.from_enumerable()
+          |> Flow.map(fn item ->
+            Map.get(item, :filename)
+          end)
+        catch
+          _ -> nil
+        end
       end)
+      |> Enum.filter(fn item -> !is_nil(item) end)
       |> Enum.map(fn filename ->
         [_, _, _, adsh_txt] = String.split(filename, ["/"])
         {adsh_txt, "https://www.sec.gov/Archives/#{filename}"}
@@ -69,7 +74,7 @@ defmodule SecDownloader do
   end
 
   def get_quarters() do
-    2021..2021
+    2005..2021
     |> Enum.flat_map(fn year ->
       [{year, "QTR1"}, {year, "QTR2"}, {year, "QTR3"}, {year, "QTR4"}]
     end)

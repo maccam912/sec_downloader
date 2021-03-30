@@ -1,5 +1,5 @@
 defmodule SecDownloader do
-  NimbleCSV.define(IndexParser, separator: "|")
+  NimbleCSV.define(IndexParser, separator: to_string([5]))
 
   def get_index(url) do
     {st, %HTTPoison.Response{body: body}} = HTTPoison.get(url, [], recv_timeout: 60000)

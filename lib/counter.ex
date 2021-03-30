@@ -24,6 +24,6 @@ defmodule SecDownloader.Counter do
 
   def handle_call(:unlock, state) do
     Process.sleep(100)
-    {:ok, :ok, state}
+    {:noreply, :ok, state}
   end
 end

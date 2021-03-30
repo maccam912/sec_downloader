@@ -55,7 +55,7 @@ defmodule SecDownloader do
       end)
 
     IO.puts("Pairs done")
-
+    pairs = Enum.drop(pairs, 48480)
     SecDownloader.Counter.start_link(length(pairs))
 
     pairs

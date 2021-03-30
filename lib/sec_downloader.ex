@@ -2,7 +2,7 @@ defmodule SecDownloader do
   NimbleCSV.define(IndexParser, separator: "|", escape: "\"")
 
   def get_index(url) do
-    {st, %HTTPoison.Response{body: body}} = HTTPoison.get(url, [], [recv_timeout: 60000])
+    {st, %HTTPoison.Response{body: body}} = HTTPoison.get(url, [], recv_timeout: 60000)
 
     if st != :ok do
       [nil]
@@ -31,27 +31,34 @@ defmodule SecDownloader do
     end
   end
 
-  def get_urls() do
-    get_quarters()
-    |> Flow.from_enumerable(stages: 4, min_demand: 10, max_demand: 20)
-    |> Flow.map(fn {year, qtr} ->
-      get_index_url(year, qtr)
-    end)
-    |> Flow.flat_map(fn url ->
-      get_index(url)
-      |> Flow.from_enumerable()
-      |> Flow.map(fn item ->
-        Map.get(item, :filename)
+  def do_work() do
+    pairs =
+      get_quarters()
+      |> Enum.map(fn {year, qtr} ->
+        get_index_url(year, qtr)
       end)
-    end)
-    |> Flow.map(fn filename ->
-      [_, _, _, adsh_txt] = String.split(filename, ["/"])
-      {adsh_txt, "https://www.sec.gov/Archives/#{filename}"}
-    end)
+      |> Enum.flat_map(fn url ->
+        get_index(url)
+        |> Flow.from_enumerable()
+        |> Flow.map(fn item ->
+          Map.get(item, :filename)
+        end)
+      end)
+      |> Enum.map(fn filename ->
+        [_, _, _, adsh_txt] = String.split(filename, ["/"])
+        {adsh_txt, "https://www.sec.gov/Archives/#{filename}"}
+      end)
+
+    SecDownloader.Counter.start_link(length(pairs))
+
+    pairs
+    |> Flow.from_enumerable(stages: 4, min_demand: 10, max_demand: 20)
     |> Flow.map(fn {adsh_txt, url} ->
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} = HTTPoison.get(url, [], [recv_timeout: 60000])
-      IO.puts "Saving #{adsh_txt}"
-      IO.inspect File.write("filings/#{adsh_txt}", body)
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} =
+        HTTPoison.get(url, [], recv_timeout: 60000)
+
+      SecDownloader.Counter.inc()
+      File.write("filings/#{adsh_txt}", body)
     end)
     |> Flow.filter(fn st -> st != :ok end)
     |> Enum.to_list()

@@ -71,8 +71,9 @@ defmodule SecDownloader do
       end)
 
     IO.puts("Pairs done")
-    existing = File.ls!("filings")
-    pairs = Enum.filter(pairs, fn {adsh_txt, _} -> adsh_txt not in existing end)
+    existing = MapSet.new(File.ls!("filings"))
+
+    pairs = Enum.filter(pairs, fn {adsh_txt, _} -> !MapSet.member?(existing, adsh_txt) end)
 
     SecDownloader.Counter.start_link(length(pairs))
 

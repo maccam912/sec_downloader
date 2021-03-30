@@ -43,6 +43,7 @@ defmodule SecDownloader do
       end)
       |> Enum.flat_map(fn url ->
         get_index(url)
+        |> Enum.filter(fn item -> !is_nil(item) end)
         |> Enum.map(fn item ->
           Map.get(item, :filename)
         end)

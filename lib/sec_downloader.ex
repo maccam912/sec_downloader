@@ -39,12 +39,16 @@ defmodule SecDownloader do
       end)
       |> Enum.flat_map(fn url ->
         try do
-          get_index(url)
-          |> Flow.from_enumerable()
-          |> Flow.map(fn item ->
-            Map.get(item, :filename)
-          end)
-        catch
+          try do
+            get_index(url)
+            |> Flow.from_enumerable()
+            |> Flow.map(fn item ->
+              Map.get(item, :filename)
+            end)
+          catch
+            _ -> nil
+          end
+        rescue
           _ -> nil
         end
       end)

@@ -7,6 +7,6 @@ defmodule SecDownloader.Recompress do
       File.rm!("filings/#{fname}")
     end)
     |> Tqdm.tqdm()
-    |> Enum.run()
+    |> Enum.to_list()
   end
 end

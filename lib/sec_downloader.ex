@@ -87,7 +87,7 @@ defmodule SecDownloader do
         HTTPoison.get(url, [], recv_timeout: 60000)
 
       SecDownloader.Counter.inc()
-      File.write("filings/#{adsh_txt}", body)
+      File.write("filings/#{adsh_txt}", body, [:compressed])
     end)
     |> Flow.filter(fn st -> st != :ok end)
     |> Enum.to_list()

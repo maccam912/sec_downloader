@@ -6,6 +6,7 @@ defmodule SecDownloader.Recompress do
       File.write!("filings/#{fname}.gz", f, [:compressed])
       File.rm!("filings/#{fname}")
     end)
+    |> Tqdm.tqdm()
     |> Enum.run()
   end
 end

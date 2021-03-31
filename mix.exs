@@ -24,7 +24,8 @@ defmodule SecDownloader.MixProject do
     [
       {:httpoison, "~> 1.8.0"},
       {:flow, "~> 1.1.0"},
-      {:nimble_csv, "~> 1.1.0"}
+      {:nimble_csv, "~> 1.1.0"},
+      {:tqdm, "~> 0.0.2"}
     ]
   end
 end

@@ -4,7 +4,7 @@ defmodule SecDownloader.Recompress do
       File.ls!("filings")
       |> Enum.filter(fn fname -> not String.contains?(fname, ".gz") end)
 
-    SecDownloader.Counter.start_link([])
+    SecDownloader.Counter.start_link(length(fnames))
 
     fnames
     |> Flow.from_enumerable()

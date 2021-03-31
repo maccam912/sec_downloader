@@ -74,6 +74,7 @@ defmodule SecDownloader do
     existing = MapSet.new(File.ls!("filings"))
 
     pairs = Enum.filter(pairs, fn {adsh_txt, _} -> !MapSet.member?(existing, adsh_txt) end)
+    pairs = Enum.shuffle(pairs)
 
     SecDownloader.Counter.start_link(length(pairs))
 

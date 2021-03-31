@@ -1,12 +1,11 @@
 defmodule SecDownloader.Recompress do
   def run() do
     File.ls!("filings")
-    |> Flow.from_enumerable()
-    |> Flow.map(fn filename ->
+    |> Enum.map(fn fname ->
       f = File.read!("filings/#{fname}")
       File.write!("filings/#{fname}.gz", f, [:compressed])
       File.rm!("filings/#{fname}")
     end)
-    |> Flow.run()
+    |> Enum.run()
   end
 end

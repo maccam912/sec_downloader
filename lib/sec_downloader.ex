@@ -67,7 +67,7 @@ defmodule SecDownloader do
       |> Enum.filter(fn item -> !is_nil(item) end)
       |> Enum.map(fn filename ->
         [_, _, _, adsh_txt] = String.split(filename, ["/"])
-        {adsh_txt, "https://www.sec.gov/Archives/#{filename}"}
+        {"#{adsh_txt}.gz", "https://www.sec.gov/Archives/#{filename}"}
       end)
 
     IO.puts("Pairs done")
@@ -87,7 +87,7 @@ defmodule SecDownloader do
         HTTPoison.get(url, [], recv_timeout: 60000)
 
       SecDownloader.Counter.inc()
-      File.write("filings/#{adsh_txt}.gz", body, [:compressed])
+      File.write("filings/#{adsh_txt}", body, [:compressed])
     end)
     |> Flow.filter(fn st -> st != :ok end)
     |> Enum.to_list()

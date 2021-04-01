@@ -7,7 +7,7 @@ defmodule SecDownloader.Recompress do
     SecDownloader.Counter.start_link(length(fnames))
 
     fnames
-    |> Flow.from_enumerable(stages: 8, min_demand: 8, max_demand: 16)
+    |> Flow.from_enumerable(stages: 32, min_demand: 160, max_demand: 320)
     |> Flow.map(fn fname ->
       f = File.read!("filings/#{fname}")
       File.write!("filings/#{fname}.gz", f, [:compressed])

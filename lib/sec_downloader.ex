@@ -98,9 +98,10 @@ defmodule SecDownloader do
   end
 
   def get_quarters() do
-    2005..2021
-    |> Enum.flat_map(fn year ->
-      [{year, "QTR1"}, {year, "QTR2"}, {year, "QTR3"}, {year, "QTR4"}]
-    end)
+    [{2021, "QTR1"}]
+    # 2021..2021
+    # |> Enum.flat_map(fn year ->
+    #   [{year, "QTR1"}, {year, "QTR2"}, {year, "QTR3"}, {year, "QTR4"}]
+    # end)
   end
 end
